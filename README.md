@@ -27,6 +27,12 @@ uv pip install -r requirements.txt
 cp .env.example .env && nano .env
 ```
 
+#### 1.1 Для https создаем Кадди файл (нужен реальный домен)
+
+```bash
+cp Caddyfile.example .env && nano Caddyfile
+```
+
 #### 2. Собираем и запускаем
 
 ```bash

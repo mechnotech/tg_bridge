@@ -1,10 +1,12 @@
 services:
+
   telegram-proxy:
     build: .
     container_name: telegram-proxy
     restart: unless-stopped
-    ports:
-      - "80:8080"
+    # Порт только через Caddy
+    expose:
+      - "8080"
     environment:
       ALLOWED_BOT_TOKEN: "${ALLOWED_BOT_TOKEN}"
       ALLOWED_CHAT_IDS: "${ALLOWED_CHAT_IDS}"
@@ -13,8 +15,26 @@ services:
       - .env
     healthcheck:
       test: ["CMD", "python", "-c",
-             "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+             "import urllib.request; urllib.request.urlopen('http://localhost:8080/healtzz')"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # сертификаты (persist между рестартами)
+      - caddy_config:/config
+    depends_on:
+      - telegram-proxy
+
+volumes:
+  caddy_data:
+  caddy_config:

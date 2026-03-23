@@ -26,20 +26,14 @@ import httpx
 from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.responses import JSONResponse
 
-# ─── Конфигурация ────────────────────────────────────────────────────────────
-
 ALLOWED_BOT_TOKEN: str = os.getenv("ALLOWED_BOT_TOKEN", "123456789:AABBccDDeeFFggHHiiJJkk")
 ALLOWED_CHAT_IDS: set[str] = set(
     filter(None, os.getenv("ALLOWED_CHAT_IDS", "-1001234567890").split(","))
 )
 MAX_RPS: int = int(os.getenv("MAX_RPS", "10"))
-
 TELEGRAM_BASE = "https://api.telegram.org"
-
-# Регулярка для валидации токена Telegram: числа:буквы_цифры (35+ символов)
 TOKEN_RE = re.compile(r"^\d{8,12}:[A-Za-z0-9_-]{35,}$")
 
-# ─── Rate Limiter (sliding window) ───────────────────────────────────────────
 
 class SlidingWindowRateLimiter:
     """Ограничитель: не более `max_rps` запросов за последнюю 1 секунду."""
@@ -63,8 +57,6 @@ class SlidingWindowRateLimiter:
             return True
 
 limiter = SlidingWindowRateLimiter(MAX_RPS)
-
-# ─── Приложение ──────────────────────────────────────────────────────────────
 
 app = FastAPI(title="Telegram API Proxy", docs_url=None, redoc_url=None)
 
@@ -167,7 +159,7 @@ async def proxy(token: str, method: str, request: Request):
     )
 
 
-@app.get("/health")
+@app.get("/healtzz")
 async def health():
     return {"status": "ok", "rps_limit": MAX_RPS, "allowed_chats": list(ALLOWED_CHAT_IDS)}
 
