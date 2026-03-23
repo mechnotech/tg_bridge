@@ -30,7 +30,7 @@ cp .env.example .env && nano .env
 #### 1.1 Для https создаем Кадди файл (нужен реальный домен)
 
 ```bash
-cp Caddyfile.example .env && nano Caddyfile
+cp Caddyfile.example .Caddyfile && nano Caddyfile
 ```
 
 #### 2. Собираем и запускаем
