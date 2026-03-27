@@ -10,7 +10,7 @@ Telegram API Proxy — FastAPI
     uvicorn telegram_proxy:app --host 0.0.0.0 --port 80
 
 Env-переменные (или поменяйте константы ниже):
-    ALLOWED_BOT_TOKEN   — полный токен вида 123456789:AABBccDDee...
+    ALLOWED_BOT_TOKENS   — список токенов, полный токен вида 123456789:AABBccDDee...
     ALLOWED_CHAT_IDS    — через запятую, напр. "-1001234567890,987654321"
     MAX_RPS             — макс. запросов в секунду (по умолчанию 10)
 """
@@ -26,7 +26,8 @@ import httpx
 from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.responses import JSONResponse
 
-ALLOWED_BOT_TOKEN: str = os.getenv("ALLOWED_BOT_TOKEN", "123456789:AABBccDDeeFFggHHiiJJkk")
+ALLOWED_BOT_TOKENS: str = os.getenv("ALLOWED_BOT_TOKENS", "123456789:AABBccDDeeFFggHHiiJJkk,33333:AAABBB")
+ALLOWED_BOT_TOKENS = set([x for x in ALLOWED_BOT_TOKENS.split(',')])
 ALLOWED_CHAT_IDS: set[str] = set(
     filter(None, os.getenv("ALLOWED_CHAT_IDS", "-1001234567890").split(","))
 )
@@ -82,7 +83,7 @@ async def proxy(token: str, method: str, request: Request):
         raise HTTPException(status_code=403, detail="Invalid bot token format")
 
     # 2. Проверяем, что токен именно наш
-    if token != ALLOWED_BOT_TOKEN:
+    if token not in ALLOWED_BOT_TOKENS:
         raise HTTPException(status_code=403, detail="Bot token not allowed")
 
     # 3. Проверяем chat_id (ищем в query-параметрах и в JSON-теле)
