@@ -34,7 +34,7 @@ ALLOWED_CHAT_IDS: set[str] = set(
 MAX_RPS: int = int(os.getenv("MAX_RPS", "10"))
 TELEGRAM_BASE = "https://api.telegram.org"
 TOKEN_RE = re.compile(r"^\d{8,12}:[A-Za-z0-9_-]{35,}$")
-
+print(ALLOWED_CHAT_IDS)
 
 class SlidingWindowRateLimiter:
     """Ограничитель: не более `max_rps` запросов за последнюю 1 секунду."""
