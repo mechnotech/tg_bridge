@@ -21,6 +21,7 @@ import collections
 import asyncio
 import re
 from typing import Optional
+from urllib.parse import unquote
 
 import httpx
 from fastapi import FastAPI, Request, Response, HTTPException
@@ -77,6 +78,7 @@ async def proxy(token: str, method: str, request: Request):
     Принимает:  GET/POST /bot<TOKEN>/<method>?param=value...
     Пересылает: https://api.telegram.org/bot<TOKEN>/<method>?param=value...
     """
+    token = unquote(token)
 
     # 1. Проверяем формат токена
     if not TOKEN_RE.match(token):
